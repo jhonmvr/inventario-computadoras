@@ -14,11 +14,7 @@ class ComputerBuilder extends StatelessWidget {
   final Function(Computer) onEdit;
   final Function(Computer) onDelete;
 
-  Future<String> getModelName(int id) async {
-    final DatabaseService _databaseService = DatabaseService();
-    final model = await _databaseService.model(id);
-    return model.name;
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,19 +62,14 @@ class ComputerBuilder extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    computer.name,
+                    computer.procesador,
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   SizedBox(height: 4.0),
-                  FutureBuilder<String>(
-                    future: getModelName(computer.modelId),
-                    builder: (context, snapshot) {
-                      return Text('Model: ${snapshot.data}');
-                    },
-                  ),
+
                   SizedBox(height: 4.0),
                   Row(
                     children: [
@@ -88,7 +79,7 @@ class ComputerBuilder extends StatelessWidget {
                         width: 15.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4.0),
-                          color: computer.color,
+                          color: Colors.white,
                           border: Border.all(
                             color: Colors.black,
                             width: 1.5,

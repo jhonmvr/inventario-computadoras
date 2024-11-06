@@ -5,17 +5,16 @@ import 'dart:ui';
 
 class Computer {
   final int? id;
-  final String name;
+  final String procesador;
   final int ram;
-  final Color color;
-  final int modelId;
+  final String discoDuro;
+  
 
   Computer({
     this.id,
-    required this.name,
+    required this.procesador,
+    required this.discoDuro,
     required this.ram,
-    required this.color,
-    required this.modelId,
   });
 
   // Convert a Computer into a Map. The keys must correspond to the names of the
@@ -23,20 +22,20 @@ class Computer {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
+      'procesador': procesador,
       'ram': ram,
-      'color': color.value,
-      'modelId': modelId,
+      'discoDuro': discoDuro,
+      
     };
   }
 
   factory Computer.fromMap(Map<String, dynamic> map) {
     return Computer(
       id: map['id']?.toInt() ?? 0,
-      name: map['name'] ?? '',
-      ram: map['ram']?.toInt() ?? 0,
-      color: Color(map['color']),
-      modelId: map['modelId']?.toInt() ?? 0,
+      procesador: map['procesador'] ?? '',
+      ram: map['ram'] ?? '',
+      discoDuro: map['discoDuro'] ?? '',
+      
     );
   }
 
@@ -48,6 +47,6 @@ class Computer {
   // each computer when using the print statement.
   @override
   String toString() {
-    return 'Computer(id: $id, name: $name, ram: $ram, color: $color, modelId: $modelId)';
+    return 'Computer(id: $id, procesador: $procesador, discoDuro: $discoDuro, ram: $ram)';
   }
 }

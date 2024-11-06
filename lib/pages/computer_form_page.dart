@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:computadoras/models/model.dart';
+
 import 'package:computadoras/models/computer.dart';
 import 'package:computadoras/services/database_service.dart';
 
-import '../common_widgets/age_slider.dart';
-import '../common_widgets/model_selector.dart';
-import '../common_widgets/color_picker.dart';
+import '../common_widgets/ram_slider.dart';
 
 class ComputerFormPram extends StatefulWidget {
   const ComputerFormPram({Key? key, this.computer}) : super(key: key);
@@ -26,51 +24,41 @@ class _ComputerFormPramState extends State<ComputerFormPram> {
     Color(0xFF862F07),
     Color(0xFF2F1B15),
   ];
-  static final List<Model> _models = [];
 
   final DatabaseService _databaseService = DatabaseService();
 
-  int _selectedAge = 0;
-  int _selectedColor = 0;
-  int _selectedModel = 0;
+  int _selectedRam = 0;
+  String _selectedDisco = '';
+  String _selectedProcesador = '';
 
   @override
   void initState() {
     super.initState();
     if (widget.computer != null) {
-      _nameController.text = widget.computer!.name;
-      _selectedAge = widget.computer!.ram;
-      _selectedColor = _colors.indexOf(widget.computer!.color);
+      _selectedRam = widget.computer!.ram;
+      _selectedDisco = widget.computer!.discoDuro;
+      _selectedProcesador = widget.computer!.procesador;
     }
   }
 
-  Future<List<Model>> _getModels() async {
-    final models = await _databaseService.models();
-    if (_models.length == 0) _models.addAll(models);
-    if (widget.computer != null) {
-      _selectedModel = _models.indexWhere((e) => e.id == widget.computer!.modelId);
-    }
-    return _models;
-  }
+
 
   Future<void> _onSave() async {
-    final name = _nameController.text;
-    final ram = _selectedAge;
-    final color = _colors[_selectedColor];
-    final model = _models[_selectedModel];
+    final ram = _selectedRam;
+    final disco = _selectedDisco;
+    final procesador = _selectedProcesador;
 
     // Add save code here
     widget.computer == null
         ? await _databaseService.insertComputer(
-            Computer(name: name, ram: ram, color: color, modelId: model.id!),
+            Computer( ram: ram,  procesador: '', discoDuro: ''),
           )
         : await _databaseService.updateComputer(
             Computer(
               id: widget.computer!.id,
-              name: name,
               ram: ram,
-              color: color,
-              modelId: model.id!,
+              discoDuro: disco,
+              procesador: procesador
             ),
           );
 
@@ -100,43 +88,19 @@ class _ComputerFormPramState extends State<ComputerFormPram> {
             // Age Slider
             AgeSlider(
               max: 30.0,
-              selectedAge: _selectedAge.toDouble(),
+              selectedAge: _selectedRam.toDouble(),
               onChanged: (value) {
                 setState(() {
-                  _selectedAge = value.toInt();
+                  _selectedRam = value.toInt();
                 });
               },
             ),
             SizedBox(height: 16.0),
             // Color Picker
-            ColorPicker(
-              colors: _colors,
-              selectedIndex: _selectedColor,
-              onChanged: (value) {
-                setState(() {
-                  _selectedColor = value;
-                });
-              },
-            ),
+
             SizedBox(height: 24.0),
             // Model Selector
-            FutureBuilder<List<Model>>(
-              future: _getModels(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text("Loading models...");
-                }
-                return ModelSelector(
-                  models: _models.map((e) => e.name).toList(),
-                  selectedIndex: _selectedModel,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedModel = value;
-                    });
-                  },
-                );
-              },
-            ),
+
             SizedBox(height: 24.0),
             SizedBox(
               height: 45.0,
